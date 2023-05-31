@@ -1,0 +1,538 @@
+ <!DOCTYPE html>
+<html>
+      
+    <head>
+        
+        <title> __ </title>
+
+        <script id="whichScript"></script>
+
+        <script>     
+        var studySize = 299 + 57;      //this is the number (+1) of .csv data files to save before pausing the study
+        var CN = false;           //language & test country variables
+        var on_server = true;    //running on langcog server? (vs locally)
+
+        var prolific = false;
+        var kid = false;  
+        var userLang = navigator.language || navigator.userLanguage; 
+        var timenum = Date.now();
+
+        </script>
+
+
+
+        <!-- set language based on CN var above -->
+        <script type="text/javascript">
+        var parent = document.getElementById("whichScript")
+        var studyLang = document.createElement("script")
+
+          if (CN) {
+            studyLang.setAttribute("src","js/Mandarin.js")
+            studyLang.setAttribute("charset","utf-8")
+          } else {
+            studyLang.setAttribute("src","js/English.js")
+          }
+          whichScript.appendChild(studyLang)
+
+        </script>
+
+
+        <script src="js/jspsych.js"></script>
+        <script src = "js/konva.js"></script>
+
+        <script src="js/task/ebbinghaus.js"></script>  
+        <script src="js/task/causal_attribution_kid.js"></script>
+        <script src="js/task/cRMTS.js"></script>
+        <script src="js/task/free_description.js"></script>
+        <script src="js/task/horizon_collage.js"></script>
+        <script src="js/task/ravens.js"></script>
+        <script src="js/task/symbolic_self_inflation.js"></script>
+        <script src="js/task/uniqueness_preference.js"></script>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+        <script src="js/jspsych-survey-multi-choice.js"></script>
+        <script src="js/jspsych-audio-keyboard-response.js"></script>
+        <script src="js/jspsych-audio-button-response.js"></script>
+        <script src="js/jspsych-circle-label.js"></script>
+        <script src = "js/jspsych-free-sort.js"></script>
+        <script src = "js/jspsych-horizon-sticker.js"></script>
+        <script src = "js/jspsych-horizon-sticker-practice.js"></script>
+        <script src="js/jspsych-RMTStrain.js"></script>
+        <script src="js/jspsych-RMTStest.js"></script>
+        <script src="js/jspsych-html-button-response.js"></script>
+        <script src="js/jspsych-html-keyboard-response.js"></script>
+        <script src="js/jspsych-html-slider-response.js"> </script>
+        <script src="js/jspsych-ebbinghaus.js"></script>
+        <script src="js/jspsych-ebbinghaus-keyboard.js"></script>   
+        <script src="js/jspsych-ebbinghaus-keyboard-practice.js"></script>  
+
+        <script src="js/jspsych-free-description-response-practice.js"></script>   <script src="js/jspsych-free-description-response.js"></script>   
+        <script src='js/jspsych-task-instructions.js'></script>
+        <script src="js/jspsych-free-sort.js"></script>
+        <script src="js/jspsych-external-html.js"></script>
+        <script src="js/jspsych-instructions.js"></script>
+        <script src="js/jspsych-image-button-response.js"></script>
+        <script src='js/jspsych-image-keyboard-response.js'></script>
+        <script src="js/jspsych-survey-text.js"></script>
+        <script src="js/jspsych-survey-multi-choice.js"></script>
+        <script src="js/jspsych-survey-multi-select.js"></script>
+        <script src="js/jspsych-survey-html-form.js"></script>
+        <script src="js/jspsych-video-button-response.js"></script>
+        <script src="js/jspsych-konva-draw-circle.js"></script>
+
+        <script src='js/jspsych-pen-choice.js'></script>
+        <script src="js/jspsych-attribution-Q1.js"></script>
+        <script src="js/jspsych-attribution-Q2.js"></script>
+        <script src="js/jspsych-prolific-ID.js"></script>
+       
+        <script src="js/jspsych-demog-dropdown.js"></script>
+        <script src="js/jspsych-demog-free-response.js"></script>
+        <script src="js/jspsych-demog-multi-choice.js"></script>
+        <script src="js/jspsych-demog-multi-select.js"></script>
+        
+        <script src="js/jspsych-funnel-debriefing-specific.js"></script>
+        <script src="js/jspsych-funnel-debriefing-general.js">
+        </script>
+        <!-- complex-animation embeds an animated sequence of images in a scene and plays audio -->
+        <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://ajax.lug.ustc.edu.cn/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <!-- RMTS Version: <script src="https://code.jquery.com/jquery-1.10.2.js"></script> -->
+        <link href="css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="css/style.css" rel="stylesheet" type="text/css"></link>
+        <link rel="stylesheet" href="css/w3.css">
+        <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css"
+/>
+
+
+
+        
+    </head>
+    <body></body>
+    <script>
+
+
+    //$.getJSON('https://json.geoiplookup.io/api?callback=?', function(data) {
+      //console.log(JSON.stringify(data, null, 2));
+     // jsPsych.data.addProperties({ IP: data.ip, country_code: data.country_code });
+    //});
+
+    // if we're not on MTurk, create a timestamp-based subject number; otherwise use turker ID
+    var subject_id = 'SS' + timenum;
+    /*    
+    if(turkInfo==null) {
+      var subject_id = 'SS' + timenum;
+    } else {
+      var subject_id = 'MT-' + turkInfo.workerId;
+    }
+*/
+    // store subject in data on every trial
+    jsPsych.data.addProperties({ subject: subject_id });
+    jsPsych.data.addProperties({ broswerLang: userLang });
+
+    var timeline = [];
+        
+        
+    
+
+ 
+ ////////// ------ Preload statement begins -----   //////////    
+
+        
+  // images that are shared between English and Mandarin version     
+    var shared_images = [
+        
+        // Ebbinghaus 
+        // mask images
+        'images/ebb_illu/mask/mask1.png','images/ebb_illu/mask/mask2.png','images/ebb_illu/mask/mask3.png', 'images/ebb_illu/mask/mask4.png', 'images/ebb_illu/mask/mask5.png', 'images/ebb_illu/mask/mask6.png', 'images/ebb_illu/mask/mask7.png',
+        // no context block images 
+        'images/ebb_illu/N_82_100.jpg','images/ebb_illu/N_90_100.jpg','images/ebb_illu/N_98_100.jpg','images/ebb_illu/N_100_86.jpg',
+        'images/ebb_illu/N_100_94.jpg','images/ebb_illu/N_100_102.jpg','images/ebb_illu/N_100_110.jpg','images/ebb_illu/N_100_118.jpg',
+        'images/ebb_illu/N_106_100.jpg','images/ebb_illu/N_114_100.jpg',
+        // illusion block images 
+        'images/ebb_illu/H_98-125_100-50.jpg','images/ebb_illu/H_100-50_98-125.jpg','images/ebb_illu/H_100-125_102-50.jpg',
+        'images/ebb_illu/H_102-50_100-125.jpg','images/ebb_illu/I_82-50_100-125.jpg','images/ebb_illu/I_86-50_100-125.jpg',
+        'images/ebb_illu/I_90-50_100-125.jpg','images/ebb_illu/I_94-50_100-125.jpg','images/ebb_illu/I_98-50_100-125.jpg',
+        'images/ebb_illu/I_100-50_102-125.jpg','images/ebb_illu/I_100-50_106-125.jpg','images/ebb_illu/I_100-50_110-125.jpg',
+        'images/ebb_illu/I_100-50_114-125.jpg','images/ebb_illu/I_100-50_118-125.jpg','images/ebb_illu/I_100-125_82-50.jpg',
+        'images/ebb_illu/I_100-125_86-50.jpg','images/ebb_illu/I_100-125_90-50.jpg','images/ebb_illu/I_100-125_94-50.jpg',
+        'images/ebb_illu/I_100-125_98-50.jpg','images/ebb_illu/I_102-125_100-50.jpg','images/ebb_illu/I_106-125_100-50.jpg',
+        'images/ebb_illu/I_110-125_100-50.jpg','images/ebb_illu/I_114-125_100-50.jpg','images/ebb_illu/I_118-125_100-50.jpg', 
+        
+        
+        // RMTS 
+        "img/a.png", "img/b.png", "img/c.png", "img/d.png", "img/e.png", "img/f.png", "img/g.png", "img/h.png", "img/i.png", "img/j.png", "img/k.png", "img/l.png", "img/m.png", "img/n.png", "img/o.png","img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png", "img/9.png", "img/10.png", "img/11.png", "img/12.png", "img/13.png", "img/14.png", "img/15.png",'img/table.png', 'img/box.png', 'img/box2.png', 'img/white.png', 'img/friend1.png', 'img/friend2.png', 'img/friend3.png', 'img/friend4.png','img/friend5.png', 'img/friend6.png',
+        
+        
+        // Pen choice 
+        pen_pic,
+        
+        // Horizon Sticker 
+        "images/sort/1.png","images/sort/2.png","images/sort/3.png","images/sort/4.png","images/sort/5.png",
+        "images/sort/6.png","images/sort/7.png","images/sort/8.png","images/sort/9.png","images/sort/10.png",
+        "images/sort/11.png","images/sort/12.png","images/sort/13.png","images/sort/14.png","images/sort/15.png",
+        "images/sort/16.png","images/sort/17.png","images/sort/18.png","images/sort/19.png","images/sort/20.png",
+        "images/sort/21.png","images/sort/22.png","images/sort/23.png","images/sort/24.png","images/sort/25.png",
+        "images/sort/26.png","images/sort/27.png","images/sort/28.png","images/sort/29.png","images/sort/30.png",
+        "images/sort/horizon_2.png", 
+        
+        // Free Description 
+        "images/free_description/01-boat-river.jpg",'images/free_description/02-bike.jpg','images/free_description/03-plane.jpg', 
+        'images/free_description/04-squirrel.jpg','images/free_description/05-tiger.jpg', 'images/free_description/06-train-red.jpg', 
+        'images/free_description/07-train-green.jpg',"images/free_description/practice.jpg",
+        
+        // Raven 
+        // a 
+        "images/raven/a.png","images/raven/a1.png","images/raven/a2.png","images/raven/a3.png","images/raven/a4.png",
+        "images/raven/a5.png","images/raven/a6.png","images/raven/a7.png","images/raven/a8.png",
+        // b 
+        "images/raven/b.png","images/raven/b1.png","images/raven/b2.png","images/raven/b3.png","images/raven/b4.png",
+        "images/raven/b5.png","images/raven/b6.png","images/raven/b7.png","images/raven/b8.png",
+        // c          
+        "images/raven/c.png","images/raven/c1.png","images/raven/c2.png","images/raven/c3.png","images/raven/c4.png",
+        "images/raven/c5.png","images/raven/c6.png","images/raven/c7.png","images/raven/c8.png",
+        // d           
+        "images/raven/d.png","images/raven/d1.png","images/raven/d2.png","images/raven/d3.png","images/raven/d4.png",
+        "images/raven/d5.png","images/raven/d6.png","images/raven/d7.png","images/raven/d8.png",
+        // e 
+         "images/raven/e.png","images/raven/e1.png","images/raven/e2.png","images/raven/e3.png","images/raven/e4.png",
+        "images/raven/e5.png","images/raven/e6.png","images/raven/e7.png","images/raven/e8.png",
+        // f
+         "images/raven/f.png","images/raven/f1.png","images/raven/f2.png","images/raven/f3.png","images/raven/f4.png",
+         "images/raven/f5.png","images/raven/f6.png","images/raven/f7.png","images/raven/f8.png",
+        // g
+        "images/raven/g.png","images/raven/g1.png","images/raven/g2.png","images/raven/g3.png","images/raven/g4.png",
+        "images/raven/g5.png","images/raven/g6.png","images/raven/g7.png","images/raven/g8.png",
+        // h
+        "images/raven/h.png","images/raven/h1.png","images/raven/h2.png","images/raven/h3.png","images/raven/h4.png",
+        "images/raven/h5.png","images/raven/h6.png","images/raven/h7.png","images/raven/h8.png",
+        // i 
+        "images/raven/i.png","images/raven/i1.png","images/raven/i2.png","images/raven/i3.png","images/raven/i4.png",
+        "images/raven/i5.png","images/raven/i6.png","images/raven/i7.png","images/raven/i8.png",
+        // j 
+        "images/raven/j.png","images/raven/j1.png","images/raven/j2.png","images/raven/j3.png","images/raven/j4.png",
+        "images/raven/j5.png","images/raven/j6.png","images/raven/j7.png","images/raven/j8.png",
+        // k 
+       "images/raven/k.png","images/raven/k1.png","images/raven/k2.png","images/raven/k3.png","images/raven/k4.png",
+       "images/raven/k5.png","images/raven/k6.png","images/raven/k7.png","images/raven/k8.png",
+        // l 
+        "images/raven/l.png","images/raven/l1.png","images/raven/l2.png","images/raven/l3.png","images/raven/l4.png",
+        "images/raven/l5.png","images/raven/l6.png","images/raven/l7.png","images/raven/l8.png",
+        // practice
+        "images/raven/practice.png","images/raven/p1.png","images/raven/p2.png","images/raven/p3.png","images/raven/p4.png",
+        "images/raven/p5.png","images/raven/p6.png",
+        
+        // demog
+        "demog/ladder.png"
+        
+    ]
+    
+    var shared_audio = ['sound/1_marseillaise.mp3','sound/2_marine_hymnshort3.mp3']
+    
+    
+    var images = [      
+         // ebbinghaus instruction 
+        // no context block prepractice 
+        'images/ebb_illu/instruction/Ephase_1_prepractice_1.jpeg','images/ebb_illu/instruction/Ephase_1_prepractice_2.jpeg',
+        'images/ebb_illu/instruction/Ephase_1_prepractice_2b.jpeg','images/ebb_illu/instruction/Ephase_1_prepractice_3.jpeg',
+        'images/ebb_illu/instruction/Ephase_1_prepractice_4.jpeg','images/ebb_illu/instruction/Ephase_1_prepractice_5.jpeg',
+        'images/ebb_illu/instruction/Ephase_1_prepractice_6.jpeg',
+        // no context block postpractice
+        "images/ebb_illu/instruction/Ephase_1_postpractice_1.jpeg","images/ebb_illu/instruction/Ephase_1_postpractice_2.jpeg",
+        "images/ebb_illu/instruction/Ephase_1_postpractice_3.jpeg", "images/ebb_illu/instruction/Ephase_1_postpractice_4.jpeg", 
+        "images/ebb_illu/instruction/Ephase_1_postpractice_5.jpeg",
+        // illusion block prepractice
+        "images/ebb_illu/instruction/Ephase_2_prepractice_1.jpeg","images/ebb_illu/instruction/Ephase_2_prepractice_2.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_prepractice_3.jpeg","images/ebb_illu/instruction/Ephase_2_prepractice_4.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_prepractice_5.jpeg","images/ebb_illu/instruction/Ephase_2_prepractice_6.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_prepractice_7.jpeg","images/ebb_illu/instruction/Ephase_2_prepractice_8.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_prepractice_9.jpeg","images/ebb_illu/instruction/Ephase_2_prepractice_10.jpeg",
+        // illusion block post practice 
+        "images/ebb_illu/instruction/Ephase_2_postpractice_1.jpeg","images/ebb_illu/instruction/Ephase_2_postpractice_1b.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_postpractice_2.jpeg","images/ebb_illu/instruction/Ephase_2_postpractice_3.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_postpractice_4.jpeg","images/ebb_illu/instruction/Ephase_2_postpractice_5.jpeg",
+        "images/ebb_illu/instruction/Ephase_2_postpractice_6.jpeg",
+             
+         //RMTS instruction 
+        "images/RMTS_instructions/E_RMTS_preinstructions01.jpeg","images/RMTS_instructions/E_RMTS_preinstructions02.jpeg",
+        "images/RMTS_instructions/E_RMTS_preinstructions03.jpeg","images/RMTS_instructions/E_RMTS_preinstructions04.jpeg",
+        "images/RMTS_instructions/E_RMTS_postinstructions01.jpeg","images/RMTS_instructions/E_RMTS_postinstructions02.jpeg",
+        "images/RMTS_instructions/E_RMTS_postinstructions03.jpeg",
+                
+         //Horizon instruction 
+         'images/sort/instruction/Ehorizon_instruction_1.jpeg','images/sort/instruction/Ehorizon_instruction_2.jpeg',
+         'images/sort/instruction/Ehorizon_instruction_3.jpeg','images/sort/instruction/Ehorizon_instruction_4.jpeg',
+         'images/sort/instruction/Ehorizon_instruction_5.jpeg','images/sort/instruction/Ehorizon_instruction_6.jpeg',
+         'images/sort/instruction/Ehorizon_instruction_7.jpeg','images/sort/instruction/Ehorizon_instruction_8.jpeg',
+        'images/sort/instruction/Ehorizon_instruction_9.jpeg',
+         
+         // Causal attribution 
+         'images/attribution/E1.jpg','images/attribution/E2.jpg',
+               
+         // Raven instruction 
+         "images/raven/E_raven_instructions_1.png","images/raven/E_raven_instructions_2.png","images/raven/E_raven_instructions_3.png",
+         "images/raven/E_raven_instructions_4.png","images/raven/E_raven_instructions_5.png","images/raven/E_raven_instructions_6.png",
+         "images/raven/E_raven_instructions_7.png","images/raven/E_raven_instructions_8.png","images/raven/E_raven_instructions_9.png",
+         "images/raven/E_raven_instructions_10.png","images/raven/E_raven_instructions_11.png","images/raven/E_raven_instructions_12.png",
+        ];
+    var audio = ['sound/six_E.mp3'];
+    var video = [
+        // causal attribution 
+        'images/attribution/E_attribution_adult.webm',
+        // gamification
+        'images/gamification/low_res/Egame_intro.webm','images/gamification/low_res/Egame_start_free.webm',
+        'images/gamification/low_res/Egame_task1.webm','images/gamification/low_res/Egame_task2.webm',
+        'images/gamification/low_res/Egame_task3.webm','images/gamification/low_res/Egame_task4.webm',
+        'images/gamification/low_res/Egame_task5_green.webm','images/gamification/low_res/Egame_task5_yellow.webm',
+        'images/gamification/low_res/Egame_task6Done_green.webm','images/gamification/low_res/Egame_task6Done_yellow.webm'];
+   
+    
+
+    // put shared images and images together   
+    images = images.concat(images, shared_images)
+        
+        
+        
+        
+ ////////// ------ Preload statement ends -----   //////////    
+        
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }    
+        
+    function scale_raw_dimension(l, scale) {
+        var scaled_array = []
+        for (i = 0; i <= l.length-1; i++){
+            var element = l[i];
+            for (k = 0; k <= element.length-1; k++){
+            var n = element[k];
+            element[k] = n/scale;
+            };
+            scaled_array.push(element);
+        };
+        return scaled_array;
+    }
+    
+    var scaled_dimension = scale_raw_dimension(raw_dimension, 3)
+ 
+    
+    
+       
+        
+  
+   
+    
+    
+    
+    
+
+    
+    //1. ebbinghaus
+    
+    
+        
+    var ebbinghaus_task = [
+        ebbinghaus_prepractice_instruction_adult,
+        ebbinghaus_prepractice_ready,
+        while_loop_first_practice_keyboard_a,
+        while_loop_first_practice_keyboard_b,
+        ebbinghaus_first_block_ready,
+        ebbinghaus_first_block_procedure,
+        ebbinghaus_second_block_prepractice_instruction,
+        ebbinghaus_second_block_prepractice_ready,
+        while_loop_second_practice_keyboard,
+        ebbinghaus_second_block_ready,
+        ebbinghaus_second_block,
+        //ebbinghaus_finished
+        ]        
+        
+    
+    
+   
+        
+    // 2. RMTS (list of training and test trails solves trial array embedded in timeline array error)
+    var RMTS_task = [RMTSinstructions,
+                    bl1_train_trials[0], //if kid, all training trials will play twice, otherwise once
+                    bl1_train_trials[1],
+                    bl1_train_trials[2],
+                    bl1_train_trials[3],
+                    RMTStest_instructions,
+                    bl1_test_trials[0],
+                    bl1_test_trials[1],
+                    bl1_test_trials[2],
+                    bl1_test_trials[3],
+                    //RMTSoutro
+                    ]    
+
+
+    // 3. horizon stickers *and* circles (in random order) 
+
+    var horizon_collage = [
+    horizon_stickers_prepractice,
+                        while_loop_horizon_practice,
+                        horizon_stickers_instructions,
+                        horizon_stickers_trial
+    ]
+
+    var symbolic_self_inflation = [
+    circles_drawing_instruction,
+                        circles_task
+    ]
+
+    
+
+    // 4. attribution (video)
+    //  first watch the video, then show image 1 (text response), then image 2 (text response)
+    
+    
+    var attribution_task = [
+                    attribution_prevideo,
+                    attribution_video_adult,
+                           attribution_q1,
+                           attribution_q2]    
+    
+    
+
+    // 5. pens
+    var pen_pack = [pen_trial]
+    
+
+    // 6. free description procedure: 
+    
+   
+    var free_description = [free_description_instruction_adult,
+                           free_description_procedure_adult
+                           //free_description_finished
+                           ]
+    
+
+  //7. Raven's matrices
+  var raven_task = raven;
+
+
+  // putting everything together 
+  
+  var thankyoufortrying = {
+
+type: 'instructions',
+pages: [
+'<p>Thank you for trying out our task! You can go back to the main page and try another task.</p>' 
+],
+show_clickable_nav: false
+
+}
+
+  
+  timeline = raven_task
+  timeline.push(thankyoufortrying)
+    
+
+
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+        
+    
+
+
+
+        
+        
+    // Check browser: 
+    
+var nVer = navigator.appVersion;
+var nAgt = navigator.userAgent;
+var browserName  = navigator.appName;
+var fullVersion  = ''+parseFloat(navigator.appVersion); 
+var majorVersion = parseInt(navigator.appVersion,10);
+var nameOffset,verOffset,ix;
+
+//// In Opera 15+, the true version is after "OPR/" 
+if ((verOffset=nAgt.indexOf("OPR/"))!=-1) {
+ browserName = "Opera";
+ fullVersion = nAgt.substring(verOffset+4);
+}else if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
+browserName = "Opera";
+fullVersion = nAgt.substring(verOffset+6);
+if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+fullVersion = nAgt.substring(verOffset+8);
+}
+//// In MSIE, the true version is after "MSIE" in userAgent
+else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+browserName = "Microsoft Internet Explorer";
+fullVersion = nAgt.substring(verOffset+5);
+}
+//// In Chrome, the true version is after "Chrome" 
+else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+browserName = "Chrome";
+fullVersion = nAgt.substring(verOffset+7);
+}
+//// In Safari, the true version is after "Safari" or after "Version" 
+else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+ browserName = "Safari";
+ fullVersion = nAgt.substring(verOffset+7);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+//// In Firefox, the true version is after "Firefox" 
+else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+ browserName = "Firefox";
+ fullVersion = nAgt.substring(verOffset+8);
+}
+//// In most other browsers, "name/version" is at the end of userAgent 
+else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
+          (verOffset=nAgt.lastIndexOf('/')) ) {
+ browserName = nAgt.substring(nameOffset,verOffset);
+ fullVersion = nAgt.substring(verOffset+1);
+ if (browserName.toLowerCase()==browserName.toUpperCase()) {
+  browserName = navigator.appName;
+ }
+}
+//// trim the fullVersion string at semicolon/space if present
+if ((ix=fullVersion.indexOf(";"))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+if ((ix=fullVersion.indexOf(" "))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+   
+//console.log(browserName)
+if (browserName !== "Chrome" && browserName !== "Firefox"){
+   alert(browserDetection_pre+browserName+browserDetection_post)
+}
+
+
+jsPsych.init({
+        timeline: timeline
+//        show_progress_bar: !kid,
+        //use_webaudio: true, // this won't work for local testing (CORS), but maybe on server
+        //preload_audio: audio,
+        //preload_images: images,
+        //preload_video: video,
+        //on_trial_finish: function(){
+            //saveData("cultureRR1-" + subject_id, jsPsych.data.get().csv());
+            //jsPsych.data.displayData();
+            //setTimeout(function() { turk.submit(jsPsych.data.get().ignore('external-html').json()); }, 5000);
+      })
+    
+    
+    
+
+    </script>
+</html>
